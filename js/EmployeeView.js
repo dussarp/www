@@ -3,6 +3,7 @@ var EmployeeView = function(employee){
 	this.initialize = function (){
 		this.el = $('<div />');
 		this.el.on('click','.add-location-btn', this.addLocation);
+		this.el.on('click','.add-contact-btn', this.addContact);
 	};
 	
 	this.render = function (){
@@ -21,6 +22,24 @@ var EmployeeView = function(employee){
 				alert('error retrieving location');
 			});
 		return false;
+	};
+	
+	this.addContact = function(event){
+		event.preventDefault();
+		console.log('addContact');
+		if(!navigator.contacts){
+			app.showAlert("contacts API not supported","error");
+			return;
+		}else{
+			var contact = navigator.contacts.create();
+			contact.name = {givenName: employee.firstName, familityName: employee.lastName};
+			var phoneNumbers = [];
+			phoneNumbers[0] = new contactField('work', employee.officePhone, false);
+			phoneNumbers[1] = new contactField('mobile', employee.cellPhone, true);
+			contact.phoneNumbers = phoneNumbers;
+			contact.save();
+			return false;
+		}	
 	};
 	
 	this.initialize();
