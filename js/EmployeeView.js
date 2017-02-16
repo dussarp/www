@@ -62,17 +62,52 @@ var EmployeeView = function(employee){
 		};
 		
 		navigator.camera.getPicture(
+			//success
 			function(imageData){
 				$('.employee-img', this.el).attr('src',"data:image/jpeg;base64," + imageData);
+				//move img
+				movePic(imageData);
 			},
+			//failure
 			function(){
 				app.showAlert('Error Pic','Error');
 			},
+			//options
 			options);
 		return false;
 	};
 	
+	function movePic(file){ 
+		window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+	}
 	
+	function resolveOnSuccess(entry){ 
+		var d = new Date();
+		var n = d.getTime();
+		//new file name
+		var newFileName = n + ".jpg";
+		var myFolderApp = "EasyPacking";
+
+		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) {      
+		//The folder is created if doesn't exist
+		fileSys.root.getDirectory( myFolderApp,
+						{create:true, exclusive: false},
+						function(directory) {
+							entry.moveTo(directory, newFileName,  successMove, resOnError);
+						},
+						resOnError);
+						},
+		resOnError);
+	}
+	
+	function successMove(entry) {
+		//I do my insert with "entry.fullPath" as for the path
+	}
+
+	function resOnError(error) {
+		alert(error.code);
+	}
+
 	this.initialize();
 }
 

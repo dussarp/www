@@ -31,34 +31,39 @@ var app = {
 	},
 	
 	route : function(){
+		var self = this;
 		var hash = window.location.hash;
-		;
-		if (!hash){
-			$('body').html(new HomeView(this.store).render().el);
-			return;
-		}else{
-			var match = hash.match(app.detailsURL);
-			if (match){
-				this.store.findById(Number(match[1]),function(employee){
-					$('body').html(new EmployeeView(employee).render().el);
-				});
+		if (!hash) {
+			if (this.homePage) {
+				this.slidePage(this.homePage);
+			} else {
+				this.homePage = new HomeView(this.store).render();
+				this.slidePage(this.homePage);
 			}
+			return;
+		}
+		var match = hash.match(this.detailsURL);
+		if (match) {
+			this.store.findById(Number(match[1]), function(employee) {
+				self.slidePage(new EmployeeView(employee).render());
+			});
 		}
 	},
 	
-	slidePage : function(page){
-		
+	slidePage: function(page) {
+ 
 		var currentPageDest,
-		self = this;
-		
-		if(!this.currentPage){
-			$(page.el).attr('class','page stage-center');
+			self = this;
+	 
+		// If there is no current page (app just started) -> No transition: Position new page in the view port
+		if (!this.currentPage) {
+			$(page.el).attr('class', 'page stage-center');
 			$('body').append(page.el);
 			this.currentPage = page;
 			return;
 		}
-		
-		 // Cleaning up: remove old pages that were moved out of the viewport
+	 
+		// Cleaning up: remove old pages that were moved out of the viewport
 		$('.stage-right, .stage-left').not('.homePage').remove();
 	 
 		if (page === app.homePage) {
@@ -70,7 +75,7 @@ var app = {
 			$(page.el).attr('class', 'page stage-right');
 			currentPageDest = "stage-left";
 		}
- 
+	 
 		$('body').append(page.el);
 	 
 		// Wait until the new page has been added to the DOM...
@@ -81,12 +86,13 @@ var app = {
 			$(page.el).attr('class', 'page stage-center transition');
 			self.currentPage = page;
 		});
+ 
 	},
     initialize: function() {
         var self = this;
 		this.detailsURL = /^#employees\/(\d{1,})/;
 		this.registerEvents();
-        this.store = new MemoryStore(function() {
+        this.store = new WebSqlStore(function() {
 			self.route();
         });
     }

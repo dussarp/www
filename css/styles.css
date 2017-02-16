@@ -220,3 +220,4 @@ li > a.tappable-active{
     -webkit-transition-duration: .375s;
     -o-transition-duration: .375s;
 }
+.employee-img{width:100px; height:100px;}
