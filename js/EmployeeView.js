@@ -4,6 +4,7 @@ var EmployeeView = function(employee){
 		this.el = $('<div />');
 		this.el.on('click','.add-location-btn', this.addLocation);
 		this.el.on('click','.add-contact-btn', this.addContact);
+		this.el.on('click','.pic-contact-btn', this.changePicContact);
 	};
 	
 	this.render = function (){
@@ -43,6 +44,34 @@ var EmployeeView = function(employee){
 		return false;
 			
 	};
+	
+	this.changePicContact = function(event){
+		event.preventDefault();
+		console.log('changePicContact');
+		
+		if(!navigator.camera){
+			app.showAlert("camera API not supported","error");
+			return;
+		}
+		
+		var options = {	quality: 50,
+						destinationType: Camera.DestinationType.DATA_URL,
+						sourceType: 1,
+						encodingType: 0
+			
+		};
+		
+		navigator.camera.getPicture(
+			function(imageData){
+				$('.employee-img', this.el).attr('src',"data:image/jpeg;base64," + imageData);
+			},
+			function(){
+				app.showAlert('Error Pic','Error');
+			},
+			options);
+		return false;
+	};
+	
 	
 	this.initialize();
 }
