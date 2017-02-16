@@ -27,19 +27,21 @@ var EmployeeView = function(employee){
 	this.addContact = function(event){
 		event.preventDefault();
 		console.log('addContact');
+		
 		if(!navigator.contacts){
 			app.showAlert("contacts API not supported","error");
 			return;
-		}else{
-			var contact = navigator.contacts.create();
-			contact.name = {givenName: employee.firstName, familityName: employee.lastName};
-			var phoneNumbers = [];
-			phoneNumbers[0] = new contactField('work', employee.officePhone, false);
-			phoneNumbers[1] = new contactField('mobile', employee.cellPhone, true);
-			contact.phoneNumbers = phoneNumbers;
-			contact.save();
-			return false;
-		}	
+		}
+		
+		var contact = navigator.contacts.create();
+		contact.name = {givenName: employee.firstName, familityName: employee.lastName};
+		var phoneNumbers = [];
+		phoneNumbers[0] = new ContactField('work', employee.officePhone, false);
+		phoneNumbers[1] = new ContactField('mobile', employee.cellPhone, true);
+		contact.phoneNumbers = phoneNumbers;
+		contact.save();
+		return false;
+			
 	};
 	
 	this.initialize();
