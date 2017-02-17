@@ -221,3 +221,4 @@ li > a.tappable-active{
     -o-transition-duration: .375s;
 }
 .employee-img{width:100px; height:100px;}
+.QRinfo{display:none;}
